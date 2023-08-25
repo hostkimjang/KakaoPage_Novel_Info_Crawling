@@ -1,8 +1,12 @@
+import time
 import requests
+from sort_data import sort_data
+from store import store_info
+import json
 import pprint
 
-
 url = 'https://page.kakao.com/graphql/'
+
 headers = {
     "Content-Type": "application/json",
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"
@@ -656,22 +660,31 @@ variables = {
     "param": {
         "categoryUid": 11,
         "subcategoryUid": "0",
-        "sortType": "latest", #latest, update
+        "sortType": "update", #latest, update
         "isComplete": False,
         "screenUid": 84,
         "page": 0
     }
 }
 
-data = {
-    "query": query,
-    "variables": variables
-}
+novel_list = []
 
-response = requests.post(
-    url=url,
-    headers=headers,
-    json=data
-)
+for page in range(0, 10):
+    variables["param"]["page"] = page
 
-pprint.pprint(response.text)
+    data = {
+        "query": query,
+        "variables": variables
+    }
+    response = requests.post(
+        url=url,
+        headers=headers,
+        json=data
+    )
+
+    sort_data(response, novel_list)
+
+    print(f"Page {page} response:")
+    time.sleep(1)
+
+store_info(novel_list)
