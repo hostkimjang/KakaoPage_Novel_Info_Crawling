@@ -15,7 +15,6 @@ def sort_data(response, novel_list):
         view = i['subtitleList'][0]
         id = meta['id']
         content_type = meta['category']
-
         if not i['badgeList']:
             free_type = "None"
         else:
@@ -25,6 +24,7 @@ def sort_data(response, novel_list):
 
         novel_info = set_novel_info("KakaoPage",
                                     title,
+                                    "not_ready_info",
                                     ageGrade,
                                     category,
                                     view,

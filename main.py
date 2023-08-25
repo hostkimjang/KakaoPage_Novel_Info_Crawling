@@ -2,6 +2,7 @@ import time
 import requests
 from sort_data import sort_data
 from store import store_info
+from bs4 import BeautifulSoup as bs
 import json
 import pprint
 
@@ -667,9 +668,49 @@ variables = {
     }
 }
 
-novel_list = []
+def get_last_page_num():
+    url = f"https://page.kakao.com/menu/10011/screen/84"
+    page = requests.get(url)
+    soup = bs(page.text, "lxml")
+    last_page = soup.select(f"#__next > div > div.flex.w-full.grow.flex-col.px-122pxr > div > div.flex.grow.flex-col > div.mb-4pxr.flex-col > div > div.flex.h-44pxr.w-full.flex-row.items-center.justify-between.bg-bg-a-10.px-15pxr > div.flex.h-full.flex-1.items-center.space-x-8pxr > span")
+    for element in last_page:
+        total = element.text
+    print(total)
+    num = total.replace("개", "").replace(",", "")
+    result = round(int(num) / 24)
+    print(result)
+    return result + 1
 
-for page in range(0, 10):
+def get_novel_info_full(last_num):
+    for page in range(0, last_num):
+        variables["param"]["page"] = page
+
+        data = {
+            "query": query,
+            "variables": variables
+        }
+        response = requests.post(
+            url=url,
+            headers=headers,
+            json=data
+        )
+
+        sort_data(response, novel_list)
+
+        print(f"Page {page} response:")
+        time.sleep(1)
+
+    store_info(novel_list)
+
+novel_list = []
+last_num = 10
+#last_num = get_last_page_num()
+get_novel_info_full(last_num)
+
+"""
+last_num = 10
+
+for page in range(0, last_num):
     variables["param"]["page"] = page
 
     data = {
@@ -688,3 +729,4 @@ for page in range(0, 10):
     time.sleep(1)
 
 store_info(novel_list)
+"""
