@@ -1,8 +1,12 @@
 import time
 import requests
 from sort_data import sort_data
+from sort_data import info_supplement
 from store import store_info
+from store import load_data
+from store import store_final
 from bs4 import BeautifulSoup as bs
+
 import json
 import pprint
 
@@ -702,31 +706,15 @@ def get_novel_info_full(last_num):
 
     store_info(novel_list)
 
+def get_novel_more_info(novel_list):
+    novel_list = load_data()
+    info_supplement(novel_list)
+    store_final(novel_list)
+
+
 novel_list = []
-last_num = 10
-#last_num = get_last_page_num()
-get_novel_info_full(last_num)
+last_num = 3
+#last_num = get_last_page_num()     #모든 소설의 정보를 얻을건가용?
+#get_novel_info_full(last_num)      #소설 정보를 얻어봐용
+#get_novel_more_info(novel_list)    #소설 정보를 보충해봐용
 
-"""
-last_num = 10
-
-for page in range(0, last_num):
-    variables["param"]["page"] = page
-
-    data = {
-        "query": query,
-        "variables": variables
-    }
-    response = requests.post(
-        url=url,
-        headers=headers,
-        json=data
-    )
-
-    sort_data(response, novel_list)
-
-    print(f"Page {page} response:")
-    time.sleep(1)
-
-store_info(novel_list)
-"""
