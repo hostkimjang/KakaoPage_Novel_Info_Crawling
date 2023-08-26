@@ -18,9 +18,9 @@ class NovelInfo:
         return f"platform: {self.platform}, " \
                f"title: {self.title}, " \
                f"info: {self.info}, " \
-               f"author: {self.author},grade: " \
-               f"{self.agegrade}, category: " \
-               f"{self.category}, " \
+               f"author: {self.author}, " \
+               f"grade: {self.agegrade}, " \
+               f"category: {self.category}, " \
                f"tag: {self.tag}, " \
                f"view: {self.view}, " \
                f"id: {self.id}, " \
@@ -62,4 +62,4 @@ def set_novel_info(platform, title, info, author, agegrade, category, tag, view,
     print(f"new_status: {new_status}")
     print(f"thumbnail: {thumbnail}")
     print("-" * 100)
-    return NovelInfo(platform, title, info, author, agegrade, category, view, id, content_type, free_type, new_status, thumbnail)
+    return NovelInfo(platform, title, info, author, agegrade, category, tag, view, id, content_type, free_type, new_status, thumbnail)
