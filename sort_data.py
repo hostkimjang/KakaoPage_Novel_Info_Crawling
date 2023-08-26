@@ -6,6 +6,7 @@ import requests
 from info import set_novel_info
 from bs4 import BeautifulSoup as bs
 
+max_retries = 3
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"
@@ -52,10 +53,18 @@ def info_supplement(novel_list):
     for novel in novel_list:
         id = novel['id']
         url = f"https://page.kakao.com/_next/data/2.12.2/ko/content/{id}.json"
-        response = requests.get(url=url, headers=headers)
-        soup = bs(response.text, "lxml")
-        element = soup.select("p")[0].text
-        page = json.loads(element)
+
+        response = make_request(url, headers)
+        if response is not None:
+            try:
+                soup = bs(response.text, "lxml")
+                element = soup.select("p")[0].text
+                page = json.loads(element)
+            except json.decoder.JSONDecodeError:
+                print("JSONDecodeError. Retrying...")
+                time.sleep(3)
+                response = make_request(url, headers)
+                continue
 
         description = page["pageProps"]["metaInfo"]["description"]
         author = page["pageProps"]["metaInfo"]["author"]
@@ -77,6 +86,21 @@ def info_supplement(novel_list):
         pprint.pprint(novel, sort_dicts=False)
         print(f"{count}번째 데이터가 추가되었습니다.")
         count += 1
-        time.sleep(1)
+
+
+def make_request(url, headers):
+    retries = 0
+    while retries < max_retries:
+        try:
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()  # HTTP 에러가 발생하면 예외가 발생합니다.
+            return response
+        except requests.exceptions.RequestException as e:
+            print(f"Error: {e}. Retrying...")
+            retries += 1
+            time.sleep(3)  # 재시도 전에 잠시 기다립니다.
+
+    print("Max retries reached. Unable to make request.")
+    return None
 
 
