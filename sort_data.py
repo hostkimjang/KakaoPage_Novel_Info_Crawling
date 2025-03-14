@@ -1,10 +1,8 @@
 import pprint
-import re
 import time
-import json
 import requests
 from info import set_novel_info
-from bs4 import BeautifulSoup as bs
+import re
 
 max_retries = 3
 
@@ -14,6 +12,7 @@ headers = {
 
 def sort_data(response, novel_list):
     res = response.json()
+    #pprint.pprint(res)
     for group in res["data"]["staticLandingGenreSection"]["groups"]:
         items = group["items"]
 
@@ -41,6 +40,7 @@ def sort_data(response, novel_list):
                                     category,
                                     "not_ready_tag",
                                     view,
+                                    "not_ready_chapter",
                                     id,
                                     content_type,
                                     free_type,
@@ -52,47 +52,48 @@ def info_supplement(novel_list):
     count = 1
     for novel in novel_list:
         id = novel['id']
-        url = f"https://page.kakao.com/_next/data/2.12.2/ko/content/{id}.json"
+        # url = f"https://page.kakao.com/_next/data/2.26.2/ko/content/{id}.json"
+        url = f"https://bff-page.kakao.com/graphql/"
 
-        response = make_request(url, headers)
+        variables = {
+	        "seriesId": id
+        }
+
+        with open("kakao_graphql_query_detail.txt", "r", encoding="utf-8") as file:
+            query = file.read()
+
+        data = {
+            "query": query,
+            "variables": variables
+        }
+
+        response = make_request(url, headers, data)
         if response is not None:
-            try:
-                soup = bs(response.text, "lxml")
-                element = soup.select("p")[0].text
-                page = json.loads(element)
-            except json.decoder.JSONDecodeError:
-                print("JSONDecodeError. Retrying...")
-                time.sleep(3)
-                response = make_request(url, headers)
-                continue
+            data = response.json()
+            #pprint.pprint(data)
 
-        description = page["pageProps"]["metaInfo"]["description"]
-        author = page["pageProps"]["metaInfo"]["author"]
-        tmp = page["pageProps"]["dehydratedState"]["queries"]
-        for i in tmp:
-            contentHomeAbout = i["state"]["data"]["contentHomeAbout"]
-            keyword_list = contentHomeAbout["themeKeywordList"]
-            keyword = [item["title"] for item in keyword_list]
-            keywords_combined = ', '.join(keyword)
+            description = data["data"]["contentHomeOverview"]["content"]["description"]
+            author = data["data"]["contentHomeOverview"]["content"]["authors"]
+            view = data["data"]["contentHomeOverview"]["content"]["serviceProperty"]["viewCount"]
+            chapter = data["data"]["contentHomeProductList"]["totalCount"]
+            info = re.sub(r'\s+', ' ', description).replace('"', '')
 
-        info = description
-        #info = re.sub(r'\s+', ' ', description).replace('"', '')
-        novel["info"] = info
-        novel["author"] = author
-        if not keywords_combined:
-            novel["tag"] = "Tag_None"
-        else:
-            novel["tag"] = keywords_combined
-        pprint.pprint(novel, sort_dicts=False)
-        print(f"{count}번째 데이터가 추가되었습니다.")
-        count += 1
+            novel["info"] = info
+            novel["author"] = author
+            novel["view"] = view
+            novel["chapter"] = chapter
+            novel_list.append(novel)
+
+            pprint.pprint(novel, sort_dicts=False)
+            print(f"{count}번째 데이터가 추가되었습니다.")
+            count += 1
 
 
-def make_request(url, headers):
+def make_request(url, headers, data):
     retries = 0
     while retries < max_retries:
         try:
-            response = requests.get(url, headers=headers)
+            response = requests.post(url=url, headers=headers, json=data)
             response.raise_for_status()  # HTTP 에러가 발생하면 예외가 발생합니다.
             return response
         except requests.exceptions.RequestException as e:
