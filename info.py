@@ -1,5 +1,5 @@
 class NovelInfo:
-    def __init__(self, platform, title, info, author, agegrade, category, tag, view, id, content_type, free_type, new_status, thumbnail):
+    def __init__(self, platform, title, info, author, agegrade, category, tag, view, chapter, id, content_type, free_type, new_status, thumbnail):
         self.platform = platform
         self.title = title
         self.info = info
@@ -8,6 +8,7 @@ class NovelInfo:
         self.category = category
         self.tag = tag
         self.view = view
+        self.chapter = chapter
         self.id = id
         self.content_type = content_type
         self.free_type = free_type
@@ -23,6 +24,7 @@ class NovelInfo:
                f"category: {self.category}, " \
                f"tag: {self.tag}, " \
                f"view: {self.view}, " \
+               f"chapter: {self.chapter}, " \
                f"id: {self.id}, " \
                f"content_type: {self.content_type}, " \
                f"free_type: {self.free_type}, " \
@@ -39,6 +41,7 @@ class NovelInfo:
             "category": self.category,
             "tag": self.tag,
             "view": self.view,
+            "chapter": self.chapter,
             "id": self.id,
             "content_type": self.content_type,
             "free_type": self.free_type,
@@ -46,7 +49,7 @@ class NovelInfo:
             "thumbnail": self.thumbnail
         }
 
-def set_novel_info(platform, title, info, author, agegrade, category, tag, view, id, content_type, free_type, new_status, thumbnail):
+def set_novel_info(platform, title, info, author, agegrade, category, tag, view, chapter, id, content_type, free_type, new_status, thumbnail):
     print("-" * 100)
     print(f"platform: {platform}")
     print(f"title: {title}")
@@ -56,10 +59,11 @@ def set_novel_info(platform, title, info, author, agegrade, category, tag, view,
     print(f"category: {category}")
     print(f"tag: {tag}")
     print(f"view: {view}")
+    print(f"chapter: {chapter}")
     print(f"id: {id}")
     print(f"content_type: {content_type}")
     print(f"free_type: {free_type}")
     print(f"new_status: {new_status}")
     print(f"thumbnail: {thumbnail}")
     print("-" * 100)
-    return NovelInfo(platform, title, info, author, agegrade, category, tag, view, id, content_type, free_type, new_status, thumbnail)
+    return NovelInfo(platform, title, info, author, agegrade, category, tag, view, chapter, id, content_type, free_type, new_status, thumbnail)
