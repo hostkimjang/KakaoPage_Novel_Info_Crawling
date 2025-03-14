@@ -1,0 +1,138 @@
+query CombinedQuery(
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+  $seriesId: Long!
+  $boughtOnly: Boolean
+  $sortType: String
+) {
+  contentHomeProductList(
+    seriesId: $seriesId
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    boughtOnly: $boughtOnly
+    sortType: $sortType
+  ) {
+    totalCount
+  }
+  contentHomeOverview(seriesId: $seriesId) {
+    id
+    seriesId
+    displayAd {
+      ...DisplayAd
+    }
+    content {
+      ...SeriesFragment
+    }
+    lastNoticeDate
+    moreButton {
+      type
+      scheme
+      title
+    }
+    setList {
+      ...NormalListViewItem
+    }
+    relatedSeries {
+      ...SeriesFragment
+    }
+  }
+}
+
+fragment DisplayAd on DisplayAd {
+  sectionUid
+  bannerUid
+  treviUid
+  momentUid
+}
+
+fragment SeriesFragment on Series {
+  id
+  seriesId
+  title
+  thumbnail
+  landThumbnail
+  categoryUid
+  category
+  categoryType
+  subcategoryUid
+  subcategory
+  badge
+  isAllFree
+  isWaitfree
+  ageGrade
+  state
+  onIssue
+  authors
+  description
+  pubPeriod
+  freeSlideCount
+  lastSlideAddedDate
+  waitfreeBlockCount
+  waitfreePeriodByMinute
+  saleState
+  startSaleDt
+  saleMethod
+  discountRate
+  discountRateText
+  serviceProperty {
+    ...ServicePropertyFragment
+  }
+  operatorProperty {
+    ...OperatorPropertyFragment
+  }
+  assetProperty {
+    ...AssetPropertyFragment
+  }
+}
+
+fragment ServicePropertyFragment on ServiceProperty {
+  viewCount
+  readCount
+  ratingCount
+  ratingSum
+  commentCount
+  isAlarmOn
+  isLikeOn
+  ticketCount
+  purchasedDate
+}
+
+fragment OperatorPropertyFragment on OperatorProperty {
+  thumbnail
+  copy
+  helixImpId
+  isTextViewer
+}
+
+fragment AssetPropertyFragment on AssetProperty {
+  bannerImage
+  cardImage
+  cardTextImage
+  cleanImage
+}
+
+fragment NormalListViewItem on NormalListViewItem {
+  id
+  type
+  thumbnail
+  ageGrade
+  row1
+  row2
+  row3 {
+    id
+    metaList
+  }
+  scheme
+  seriesId
+  isCheckMode
+  price
+  discountPrice
+  discountRate
+  discountRateText
+  showPlayerIcon
+  rank
+}
