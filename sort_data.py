@@ -52,7 +52,6 @@ def info_supplement(novel_list):
     count = 1
     for novel in novel_list:
         id = novel['id']
-        # url = f"https://page.kakao.com/_next/data/2.26.2/ko/content/{id}.json"
         url = f"https://bff-page.kakao.com/graphql/"
 
         variables = {
@@ -82,7 +81,6 @@ def info_supplement(novel_list):
             novel["author"] = author
             novel["view"] = view
             novel["chapter"] = chapter
-            novel_list.append(novel)
 
             pprint.pprint(novel, sort_dicts=False)
             print(f"{count}번째 데이터가 추가되었습니다.")
