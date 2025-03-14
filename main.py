@@ -75,6 +75,6 @@ def get_novel_more_info(novel_list):
 
 novel_list = []
 last_num = 1
-#last_num = get_last_page_num()     #모든 소설의 정보를 얻을건가용?
+last_num = get_last_page_num()     #모든 소설의 정보를 얻을건가용?
 get_novel_info_full(last_num)      #소설 정보를 얻어봐용
 get_novel_more_info(novel_list)    #소설 정보를 보충해봐용
