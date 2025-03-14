@@ -1,5 +1,5 @@
 class NovelInfo:
-    def __init__(self, platform, title, info, author, agegrade, category, tag, view, chapter, id, content_type, free_type, new_status, thumbnail):
+    def __init__(self, platform, title, info, author, agegrade, category, tag, view, chapter, id, content_type, free_type, new_status, lastupdate_date, thumbnail):
         self.platform = platform
         self.title = title
         self.info = info
@@ -13,6 +13,7 @@ class NovelInfo:
         self.content_type = content_type
         self.free_type = free_type
         self.new_status = new_status
+        self.lastupdate_date = lastupdate_date
         self.thumbnail = thumbnail
 
     def __str__(self):
@@ -29,6 +30,7 @@ class NovelInfo:
                f"content_type: {self.content_type}, " \
                f"free_type: {self.free_type}, " \
                f"new_status: {self.new_status}, " \
+               f"lastupdate_date: {self.lastupdate_date}, " \
                f"thumbnail: {self.thumbnail}"
 
     def to_dict(self):
@@ -46,10 +48,11 @@ class NovelInfo:
             "content_type": self.content_type,
             "free_type": self.free_type,
             "new_status": self.new_status,
+            "lastupdate_date": self.lastupdate_date,
             "thumbnail": self.thumbnail
         }
 
-def set_novel_info(platform, title, info, author, agegrade, category, tag, view, chapter, id, content_type, free_type, new_status, thumbnail):
+def set_novel_info(platform, title, info, author, agegrade, category, tag, view, chapter, id, content_type, free_type, new_status, lastupdate_date, thumbnail):
     print("-" * 100)
     print(f"platform: {platform}")
     print(f"title: {title}")
@@ -64,6 +67,7 @@ def set_novel_info(platform, title, info, author, agegrade, category, tag, view,
     print(f"content_type: {content_type}")
     print(f"free_type: {free_type}")
     print(f"new_status: {new_status}")
+    print(f"lastupdate_date: {lastupdate_date}")
     print(f"thumbnail: {thumbnail}")
     print("-" * 100)
-    return NovelInfo(platform, title, info, author, agegrade, category, tag, view, chapter, id, content_type, free_type, new_status, thumbnail)
+    return NovelInfo(platform, title, info, author, agegrade, category, tag, view, chapter, id, content_type, free_type, new_status, lastupdate_date, thumbnail)

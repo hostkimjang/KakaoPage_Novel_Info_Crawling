@@ -45,6 +45,7 @@ def sort_data(response, novel_list):
                                     content_type,
                                     free_type,
                                     new_status,
+                                    "not_ready_lastupdate",
                                     thumbnail)
         novel_list.append(novel_info)
 
@@ -74,6 +75,7 @@ def info_supplement(novel_list):
             description = data["data"]["contentHomeOverview"]["content"]["description"]
             author = data["data"]["contentHomeOverview"]["content"]["authors"]
             view = data["data"]["contentHomeOverview"]["content"]["serviceProperty"]["viewCount"]
+            last_update = data["data"]["contentHomeOverview"]["content"]["lastSlideAddedDate"]
             chapter = data["data"]["contentHomeProductList"]["totalCount"]
             info = re.sub(r'\s+', ' ', description).replace('"', '')
 
@@ -81,6 +83,7 @@ def info_supplement(novel_list):
             novel["author"] = author
             novel["view"] = view
             novel["chapter"] = chapter
+            novel["lastupdate_date"] = last_update
 
             pprint.pprint(novel, sort_dicts=False)
             print(f"{count}번째 데이터가 추가되었습니다.")
