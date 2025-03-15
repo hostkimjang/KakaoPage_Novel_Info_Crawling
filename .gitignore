@@ -1,5 +1,6 @@
 kakao_novel_final.json
 kakao_novel_info.json
+/DB_Processing_Log
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -153,3 +154,5 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+kakao_novel_final.json
+kakao_novel_info.json
