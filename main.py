@@ -1,8 +1,7 @@
 import time
 import requests
-
 from DB_processing import store_db
-from sort_data import sort_data
+from sort_data import sort_data, info_supplement_parallel
 from sort_data import info_supplement
 from store import store_info
 from store import load_data
@@ -11,6 +10,8 @@ from bs4 import BeautifulSoup as bs
 
 
 url = 'https://bff-page.kakao.com/graphql/'
+
+max_worker = 50
 
 headers = {
     "Content-Type": "application/json",
@@ -71,13 +72,14 @@ def get_novel_info_full(last_num):
 
 def get_novel_more_info(novel_list):
     novel_list = load_data()
-    info_supplement(novel_list)
+    info_supplement_parallel(novel_list, max_workers=max_worker)
+    # info_supplement(novel_list)
     store_final(novel_list)
+
+if __name__ == '__main__':
+    novel_list = []
+    #last_num = 100
+    last_num = get_last_page_num()     #모든 소설의 정보를 얻을건가용?
+    get_novel_info_full(last_num)      #소설 정보를 얻어봐용
+    get_novel_more_info(novel_list)    #소설 정보를 보충해봐용
     store_db()
-
-
-novel_list = []
-#last_num = 100
-last_num = get_last_page_num()     #모든 소설의 정보를 얻을건가용?
-get_novel_info_full(last_num)      #소설 정보를 얻어봐용
-get_novel_more_info(novel_list)    #소설 정보를 보충해봐용
