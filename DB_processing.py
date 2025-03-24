@@ -47,14 +47,15 @@ def store_db():
             agegrade TEXT, 
             category TEXT, 
             hashtag TEXT, 
-            view INTEGER DEFAULT 0, 
+            views INTEGER DEFAULT 0, 
             chapter INTEGER DEFAULT 0, 
             thumbnail TEXT, 
             content_type TEXT, 
             free_type TEXT, 
             new_status TEXT,
-            last_updated DATETIME, 
-            del INTEGER DEFAULT 0, 
+            updatedate DATETIME, 
+            del INTEGER DEFAULT 0,
+            locate TEXT, 
             crawl_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     """)
@@ -101,25 +102,26 @@ def store_db():
 
                 cur.execute("""
                     UPDATE novel 
-                    SET title=?, author=?, info=?, view=?, chapter=?, thumbnail=?, 
-                        hashtag=?, category=?, agegrade=?, content_type=?, free_type=?, new_status=?, last_updated=?,crawl_timestamp=? 
+                    SET title=?, author=?, info=?, views=?, chapter=?, thumbnail=?, 
+                        hashtag=?, category=?, agegrade=?, content_type=?, free_type=?, new_status=?, updatedate=?, crawl_timestamp=?, locate=?
                     WHERE id=?
                 """, (
                     novel["title"], novel["author"], novel["info"], novel["view"], novel["chapter"],
                     novel["thumbnail"], novel["hashtag"], novel["category"], novel["agegrade"],
-                    novel["content_type"], novel["free_type"], novel["new_status"], novel["lastupdate_date"], novel["crawl_timestamp"], novel["id"]
+                    novel["content_type"], novel["free_type"], novel["new_status"], novel["lastupdate_date"], novel["crawl_timestamp"], novel["locate"], novel["id"]
                 ))
         else:
             print(f"ID:{novel['id']}는 존재하지 않습니다. 새 레코드를 삽입합니다.")
             cur.execute("""
-                INSERT INTO novel 
-                (id, platform, title, author, info, agegrade, category, hashtag, view, chapter, 
-                 thumbnail, content_type, free_type, new_status, last_updated, crawl_timestamp) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO novel
+                (id, platform, title, author, info, agegrade, category, hashtag, views, chapter,
+                 thumbnail, content_type, free_type, new_status, updatedate, crawl_timestamp, locate)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 novel["id"], novel["platform"], novel["title"], novel["author"], novel["info"], novel["agegrade"],
                 novel["category"], novel["tag"], novel["view"], novel["chapter"],
-                novel["thumbnail"], novel["content_type"], novel["free_type"], novel["new_status"], novel["lastupdate_date"], novel["crawl_timestamp"]
+                novel["thumbnail"], novel["content_type"], novel["free_type"], novel["new_status"],
+                novel["lastupdate_date"], novel["crawl_timestamp"], novel["locate"]
             ))
 
         print(f"{count}/{len(novel_list)}번째 데이터 저장 완료")

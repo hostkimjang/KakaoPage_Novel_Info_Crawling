@@ -33,6 +33,7 @@ def sort_data(response, novel_list):
             free_type = i['badgeList'][0]
         new_status = i['statusBadge']
         thumbnail = i['thumbnail']
+        locate = f"https://page.kakao.com/content/{id}"
 
         novel_info = set_novel_info("KakaoPage",
                                     title,
@@ -44,6 +45,7 @@ def sort_data(response, novel_list):
                                     view,
                                     "not_ready_chapter",
                                     id,
+                                    locate,
                                     content_type,
                                     free_type,
                                     new_status,
@@ -96,7 +98,6 @@ def process_novel(novel):
             last_update = content["lastSlideAddedDate"]
             chapter = data["data"]["contentHomeProductList"]["totalCount"]
             info = re.sub(r'\s+', ' ', description).replace('"', '')
-
             novel["info"] = info
             novel["author"] = author
             novel["view"] = view

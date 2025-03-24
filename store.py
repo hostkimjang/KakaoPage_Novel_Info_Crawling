@@ -18,7 +18,8 @@ def store_info(info_list):
                 "content_type": info.content_type,
                 "free_type": info.free_type,
                 "new_status": info.new_status,
-                "thumbnail": info.thumbnail
+                "thumbnail": info.thumbnail,
+                "locate": info.locate,
             }
             novel_data.append(novel_dict)
         json.dump(novel_data, f, ensure_ascii=False, indent=4)
