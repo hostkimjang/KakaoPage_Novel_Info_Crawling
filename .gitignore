@@ -156,3 +156,5 @@ cython_debug/
 #.idea/
 kakao_novel_final.json
 kakao_novel_info.json
+/.idea
+*.db
