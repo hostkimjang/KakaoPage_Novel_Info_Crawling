@@ -1,4 +1,5 @@
 import time
+from pprint import pprint
 import requests
 from DB_processing import store_db
 from sort_data import sort_data, info_supplement_parallel
@@ -42,6 +43,7 @@ def get_last_page_num():
     url = f"https://page.kakao.com/menu/10011/screen/84"
     page = requests.get(url)
     soup = bs(page.text, "lxml")
+    total = 0
     last_page = soup.select(f"#__next > div > div.flex.w-full.grow.flex-col.px-122pxr > div > div.flex.grow.flex-col > div.mb-4pxr.flex-col > div > div.flex.h-44pxr.w-full.flex-row.items-center.justify-between.bg-bg-a-10.px-15pxr > div.flex.h-full.flex-1.items-center.space-x-8pxr > span")
     for element in last_page:
         total = element.text
@@ -53,6 +55,7 @@ def get_last_page_num():
 
 def get_novel_info_full(last_num):
     for page in range(0, last_num):
+        pprint(page)
         variables["param"]["page"] = page
 
         data = {
