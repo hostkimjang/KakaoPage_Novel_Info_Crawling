@@ -7,6 +7,7 @@ from sort_data import info_supplement
 from store import store_info
 from store import load_data
 from store import store_final
+import json
 from bs4 import BeautifulSoup as bs
 import concurrent.futures
 import copy
@@ -40,18 +41,39 @@ variables = {
 }
 
 def get_last_page_num():
-    url = f"https://page.kakao.com/menu/10011/screen/84"
-    page = requests.get(url)
-    soup = bs(page.text, "lxml")
-    total = 0
-    last_page = soup.select(f"#__next > div > div.flex.w-full.grow.flex-col.px-122pxr > div > div.flex.grow.flex-col > div.mb-4pxr.flex-col > div > div.flex.h-44pxr.w-full.flex-row.items-center.justify-between.bg-bg-a-10.px-15pxr > div.flex.h-full.flex-1.items-center.space-x-8pxr > span")
-    for element in last_page:
-        total = element.text
-    print(total)
-    num = total.replace("개", "").replace(",", "")
-    result = round(int(num) / 24)
-    print(result)
-    return result + 1
+    retry = 10
+    url = "https://page.kakao.com/menu/10011/screen/84"
+
+    for attempt in range(1, retry + 1):
+        try:
+            print(f"[{attempt}/{retry}] 요청 중...")
+
+            page = requests.get(url, timeout=10)
+            if page.status_code != 200:
+                raise Exception(f"비정상 응답 코드: {page.status_code}")
+
+            soup = bs(page.text, "lxml")
+            script_tag = soup.find("script", {"id": "__NEXT_DATA__"})
+            if not script_tag:
+                raise ValueError("__NEXT_DATA__ 스크립트 태그가 없음")
+
+            data = json.loads(script_tag.string)
+
+            total_count = data["props"]["pageProps"]["initialProps"]["dehydratedState"]["queries"][0]["state"]["data"][
+                "staticLandingGenreLayout"]["sections"][0]["totalCount"]
+            result = round(int(total_count) / 24)
+
+            pprint(f"총 {total_count}개 작품")
+            pprint(f"총 {result}페이지")
+            return result
+
+        except Exception as e:
+            print(f"❌ 오류 발생: {e}")
+            if attempt == retry:
+                print("🚫 최대 재시도 횟수 초과. 실패.")
+                return None
+            time.sleep(1.5)  # 재시도 간 대기
+
 
 def get_novel_info_full(last_num):
     for page in range(0, last_num):
