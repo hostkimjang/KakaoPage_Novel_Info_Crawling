@@ -1,6 +1,8 @@
 import time
 from pprint import pprint
 import requests
+from soupsieve.pretty import pretty
+
 from DB_processing import store_db
 from sort_data import sort_data, info_supplement_parallel
 from sort_data import info_supplement
@@ -18,7 +20,7 @@ url = 'https://bff-page.kakao.com/graphql/'
 max_worker = 50
 
 headers = {
-    "Content-Type": "application/json",
+    # "Content-Type": "application/json",
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"
 }
 
@@ -40,6 +42,28 @@ variables = {
     }
 }
 
+def get_nested_value(data_dict, path, default=None):
+    """
+    중첩된 딕셔너리와 리스트에서 안전하게 값을 가져옵니다.
+    path: 키와 인덱스의 리스트 (예: ["props", "pageProps", "queries", 0, "totalCount"])
+    """
+    current = data_dict
+    for key_or_index in path:
+        if isinstance(current, dict):
+            current = current.get(key_or_index)
+        elif isinstance(current, list):
+            try:
+                current = current[key_or_index]
+            except (IndexError, TypeError): # TypeError for non-integer index
+                return default
+        else:
+            return default
+
+        if current is None and key_or_index != path[-1]: # 경로의 마지막이 아닌데 None이면 중간에 끊김
+            return default
+    return current
+
+
 def get_last_page_num():
     retry = 10
     url = "https://page.kakao.com/menu/10011/screen/84"
@@ -48,7 +72,7 @@ def get_last_page_num():
         try:
             print(f"[{attempt}/{retry}] 요청 중...")
 
-            page = requests.get(url, timeout=10)
+            page = requests.get(url, headers=headers, timeout=10)
             if page.status_code != 200:
                 raise Exception(f"비정상 응답 코드: {page.status_code}")
 
@@ -58,13 +82,20 @@ def get_last_page_num():
                 raise ValueError("__NEXT_DATA__ 스크립트 태그가 없음")
 
             data = json.loads(script_tag.string)
+            # pprint(data)
 
-            total_count = data["props"]["pageProps"]["initialProps"]["dehydratedState"]["queries"][0]["state"]["data"][
-                "staticLandingGenreLayout"]["sections"][0]["totalCount"]
+            path_to_total_count = [
+                "props", "pageProps", "initialProps", "dehydratedState",
+                "queries", 0, "state", "data", "staticLandingGenreLayout",
+                "sections", 0, "totalCount"
+            ]
+
+            total_count = get_nested_value(data, path_to_total_count)
             result = round(int(total_count) / 24)
 
             pprint(f"총 {total_count}개 작품")
             pprint(f"총 {result}페이지")
+            time.sleep(5)
             return result
 
         except Exception as e:
