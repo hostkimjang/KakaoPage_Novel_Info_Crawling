@@ -69,6 +69,11 @@ def store_db():
             print("데이터가 없습니다 또는 삭제, 작업이 정상으로 완료되지 않음.")
             continue
 
+        # lastupdate_date가 누락된 경우 건너뛰기 (선택사항)
+        if "lastupdate_date" not in novel or novel["lastupdate_date"] is None:
+            print(f"ID {novel.get('id', 'Unknown')}: lastupdate_date 누락, 건너뛰기")
+            continue
+
         novel["lastupdate_date"] = novel["lastupdate_date"].isoformat() if isinstance(novel["lastupdate_date"],datetime) else novel["lastupdate_date"]
         novel["crawl_timestamp"] = dt
 
@@ -82,6 +87,18 @@ def store_db():
 
             pprint(novel)
             novel.setdefault("hashtag", "")
+            novel.setdefault("chapter", 0)
+            novel.setdefault("view", 0)
+            novel.setdefault("new_status", "")
+            novel.setdefault("content_type", "")
+            novel.setdefault("free_type", "")
+            novel.setdefault("agegrade", "")
+            novel.setdefault("category", "")
+            novel.setdefault("author", "")
+            novel.setdefault("title", "")
+            novel.setdefault("info", "")
+            novel.setdefault("thumbnail", "")
+            novel.setdefault("locate", "")
 
 
             # 변경 사항 확인 (필요할 때만 업데이트)
