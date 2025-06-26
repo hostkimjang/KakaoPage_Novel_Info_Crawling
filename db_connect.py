@@ -290,7 +290,8 @@ def store_db_kakao_pg_copy():
                     new_status TEXT,
                     updatedate TIMESTAMP WITH TIME ZONE,
                     del_ BIGINT,
-                    locate TEXT
+                    locate TEXT,
+                    crawl_timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
                 );
                 """
 
@@ -308,7 +309,7 @@ def store_db_kakao_pg_copy():
                     # 컬럼 순서 정의
                     columns = ['id', 'platform', 'title', 'author', 'info', 'agegrade', 'category', 
                               'hashtag', 'views', 'chapter', 'thumbnail', 'content_type', 'free_type', 
-                              'new_status', 'updatedate', 'del_', 'locate']
+                              'new_status', 'updatedate', 'del_', 'locate', 'crawl_timestamp']
                     
                     # CSV 헤더 작성
                     writer.writerow(columns)
@@ -365,7 +366,8 @@ def store_db_kakao_pg_copy():
                     new_status = temp.new_status,
                     updatedate = temp.updatedate,
                     del = temp.del_,
-                    locate = temp.locate
+                    locate = temp.locate,
+                    crawl_timestamp = temp.crawl_timestamp
                 FROM {temp_table_name} temp
                 WHERE kakao_page.id = temp.id;
                 """
