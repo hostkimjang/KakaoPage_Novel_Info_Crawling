@@ -2,7 +2,7 @@ import time
 from pprint import pprint
 import requests
 from soupsieve.pretty import pretty
-
+from db_connect import store_db_kakao_pg_copy
 from DB_processing import store_db
 from sort_data import sort_data, info_supplement_parallel
 from sort_data import info_supplement
@@ -192,3 +192,4 @@ if __name__ == '__main__':
     get_novel_info_full_parallel(novel_list, last_num, max_workers=10)  # 병렬 처리로 실행
     get_novel_more_info(novel_list)    #소설 정보를 보충해봐용
     store_db()
+    store_db_kakao_pg_copy()
